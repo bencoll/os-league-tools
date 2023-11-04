@@ -6,7 +6,8 @@ import Table from './common/Table';
 import NumberCell from './common/calculator/NumberCell';
 import ActivityCell from './common/calculator/ActivityCell';
 import MaterialsCell from './common/calculator/MaterialsCell';
-import RegionsCell from './common/calculator/RegionsCell';
+import RegionsCell from './common/RegionsCell';
+import { regionsFilter } from '../util/commonFilters';
 
 export default function CalculatorTable({ applyExpMultipliers, applyInputMultipliers, applyOutputMultipliers }) {
   const {
@@ -115,6 +116,7 @@ export default function CalculatorTable({ applyExpMultipliers, applyInputMultipl
   const initialState = useMemo(() => ({ hiddenColumns: ['id'], pageSize: 100 }), []);
   const regionsState = useSelector(state => state.unlocks.regions);
   const filterState = useSelector(state => state.filters.calculators);
+  const commonFilterState = useSelector(state => state.filters.common);
 
   return (
     <div className='basis-3/4 grow w-full xl:ml-1 bg-primary'>
@@ -123,7 +125,7 @@ export default function CalculatorTable({ applyExpMultipliers, applyInputMultipl
         data={data}
         defaultColumn={defaultColumn}
         filters={[regionsFilter]}
-        filterState={filterState}
+        filterState={{ ...filterState, ...commonFilterState }}
         initialState={initialState}
         customFilterProps={{ regionsState }}
         enableResizeColumns
@@ -131,11 +133,4 @@ export default function CalculatorTable({ applyExpMultipliers, applyInputMultipl
       />
     </div>
   );
-}
-
-function regionsFilter(record, filterState) {
-  if (filterState.regions === null) {
-    return true;
-  }
-  return record.areas.some(area => filterState.regions.includes(area));
 }

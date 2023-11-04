@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { without } from 'lodash';
-import { updateTaskFilter, resetTasks } from '../store/filters';
+import { updateTaskFilter, resetTasks, updateCommonFilter, resetCommon } from '../store/filters';
 import ButtonGroup from './common/ButtonGroup';
 import FilterButtons, { FilterSelectAll } from './common/FilterButtons';
 import LabeledCheckbox from './common/LabeledCheckbox';
@@ -9,10 +9,19 @@ import CheckboxTree from './common/CheckboxTree';
 import { DIFFICULTY, STATS } from '../data/constants';
 import { formatCategoriesForCheckboxTree } from '../data/categories';
 import getSkillsPanelData from '../util/getSkillsPanelData';
+import RegionsFilter from './common/RegionsFilter';
 
 export default function TaskFilters({ history }) {
   const filterState = useSelector(state => state.filters.tasks);
+  const commonFilterState = useSelector(state => state.filters.common);
   const dispatch = useDispatch();
+
+  function resetFilters() {
+    return () => {
+      dispatch(resetTasks());
+      dispatch(resetCommon());
+    };
+  }
 
   return (
     <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-1 gap-2 mt-3'>
@@ -138,8 +147,11 @@ export default function TaskFilters({ history }) {
           />
         </div>
       </div>
+      <div className='order-7 mt-1'>
+        <RegionsFilter regionsState={commonFilterState.regions} updateFilter={updateCommonFilter} />
+      </div>
       <div className='w-full px-3 gap-1 grid lg:grid-cols-1 sm:grid-cols-2 grid-cols-1 order-7 sm:col-span-2 lg:col-span-1'>
-        <button type='button' className='button-outline w-full mb-1 h-fit' onClick={() => dispatch(resetTasks())}>
+        <button type='button' className='button-outline w-full mb-1 h-fit' onClick={() => dispatch(resetFilters())}>
           Clear filters
         </button>
         <div className='flex gap-1'>

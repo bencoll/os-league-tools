@@ -1,6 +1,7 @@
 import { difference } from 'lodash';
 import { STATS } from '../data/constants';
 import tasks from '../data/tasks';
+import { regionsFilter } from './commonFilters';
 
 function difficultyFilter(record, filterState) {
   if (filterState.difficulty === null) {
@@ -85,4 +86,5 @@ export default {
   todoFilter,
   ignoredFilter,
   prereqFilter,
+  regionsFilter,
 };

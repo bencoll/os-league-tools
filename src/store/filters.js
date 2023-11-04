@@ -7,9 +7,13 @@ import { STATS, DIFFICULTY, DIARY_LOCATIONS, DIARY_DIFFICULTY } from '../data/co
 import { QUEST_DIFFICULTY, QUEST_LENGTH } from '../data/quests';
 import { TRAILBLAZER_REGIONS } from '../data/regions';
 
-const CURRENT_VERSION = 13;
+const CURRENT_VERSION = 15;
 
 const mapDataValues = values => Object.values(values).map(({ label }) => label);
+
+const INITIAL_COMMON_STATE = {
+  regions: mapDataValues(TRAILBLAZER_REGIONS),
+};
 
 const INITIAL_TASK_STATE = {
   status: 'all',
@@ -41,11 +45,11 @@ const INITIAL_DIARIES_STATE = {
 
 const INITIAL_CALCULATORS_STATE = {
   status: 'all',
-  regions: mapDataValues(TRAILBLAZER_REGIONS),
 };
 
 const INITIAL_STATE = {
   version: CURRENT_VERSION,
+  common: INITIAL_COMMON_STATE,
   tasks: INITIAL_TASK_STATE,
   quests: INITIAL_QUEST_STATE,
   diaries: INITIAL_DIARIES_STATE,
@@ -56,6 +60,9 @@ export const filterSlice = createSlice({
   name: 'filters',
   initialState: INITIAL_STATE,
   reducers: {
+    updateCommonFilter: (state, action) => {
+      state.common[action.payload.field] = action.payload.value;
+    },
     updateTaskFilter: (state, action) => {
       state.tasks[action.payload.field] = action.payload.value;
     },
@@ -68,6 +75,10 @@ export const filterSlice = createSlice({
     updateCalculatorsFilter: (state, action) => {
       state.calculators[action.payload.field] = action.payload.value;
     },
+    resetCommon: state => ({
+      ...state,
+      common: INITIAL_COMMON_STATE,
+    }),
     resetTasks: state => ({
       ...state,
       tasks: INITIAL_TASK_STATE,
@@ -98,10 +109,12 @@ export const loadState = () => {
 };
 
 export const {
+  updateCommonFilter,
   updateTaskFilter,
   updateQuestFilter,
   updateDiariesFilter,
   updateCalculatorsFilter,
+  resetCommon,
   resetTasks,
   resetQuests,
   resetDiaries,

@@ -1,28 +1,14 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import FilterButtons, { FilterSelectAll } from './common/FilterButtons';
-import { TRAILBLAZER_REGIONS } from '../data/regions';
-import { updateCalculatorsFilter } from '../store/filters';
+import { updateCommonFilter } from '../store/filters';
+import RegionsFilter from './common/RegionsFilter';
 
 export default function CalculatorFilters() {
-  const filterState = useSelector(state => state.filters.calculators);
+  const commonFilterState = useSelector(state => state.filters.common);
 
   return (
     <div className='mb-1'>
-      <h3 className='heading-accent-md'>Regions</h3>
-      <div className='flex flex-col px-3 text-sm w-full'>
-        <FilterButtons
-          filterName='regions'
-          selectedValues={filterState.regions}
-          updateFunc={updateCalculatorsFilter}
-          values={Object.values(TRAILBLAZER_REGIONS)}
-        />
-        <FilterSelectAll
-          filterName='regions'
-          updateFunc={updateCalculatorsFilter}
-          values={Object.values(TRAILBLAZER_REGIONS).map(({ label }) => label)}
-        />
-      </div>
+      <RegionsFilter regionsState={commonFilterState.regions} updateFilter={updateCommonFilter} />
     </div>
   );
 }

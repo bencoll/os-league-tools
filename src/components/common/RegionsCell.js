@@ -1,5 +1,5 @@
 import React from 'react';
-import { TRAILBLAZER_REGIONS } from '../../../data/regions';
+import { TRAILBLAZER_REGIONS } from '../../data/regions';
 
 export default function RegionsCell({ value }) {
   return (

@@ -8,6 +8,7 @@ import Difficulty from './Difficulty';
 import Category from './Category';
 import Table from './common/Table';
 import useBreakpoint, { MEDIA_QUERIES, MODE } from '../hooks/useBreakpoint';
+import RegionsCell from './common/RegionsCell';
 
 function renderTaskCell({ history }) {
   return ({ row, value }) => <Cell.Task row={row} value={value} addToHistory={history.addHistory} />;
@@ -29,6 +30,8 @@ export default function TaskTable({ history, readonly, taskState: propsTaskState
         ...task,
         completedAt: taskState[task.id]?.completed ?? -1,
         priority: taskState[task.id]?.order,
+        // TODO: remove once region task data is retrieved on league launch
+        areas: ['All'],
       })),
     [taskState]
   );
@@ -80,6 +83,14 @@ export default function TaskTable({ history, readonly, taskState: propsTaskState
         sortType: sortPriority,
         accessor: 'priority',
       },
+      {
+        Header: 'Regions',
+        id: 'regions',
+        accessor: 'areas',
+        maxWidth: 176,
+        Cell: RegionsCell,
+        disableSortBy: true,
+      },
     ],
     [isXsViewport, isSmViewport, isMdOrSmallerViewport]
   );
@@ -98,17 +109,19 @@ export default function TaskTable({ history, readonly, taskState: propsTaskState
   initialState.pageSize = 50;
 
   const filterState = useSelector(state => state.filters.tasks);
+  const commonFilterState = useSelector(state => state.filters.common);
   const tasksState = useSelector(state => state.tasks.tasks);
   const hiscoresState = useSelector(state => state.character.hiscoresCache.data);
+  const regionsState = useSelector(state => state.unlocks.regions);
 
   return (
     <Table
       columns={columns}
       data={data}
       filters={filters}
-      filterState={filterState}
+      filterState={{ ...filterState, ...commonFilterState }}
       globalFilter={fuzzyTextFilter}
-      customFilterProps={{ tasksState, hiscoresState }}
+      customFilterProps={{ tasksState, hiscoresState, regionsState }}
       defaultColumn={defaultColumn}
       initialState={initialState}
       ExpandedRow={readonly ? Cell.ReadonlyExpandedTask : Cell.ExpandedTask}
